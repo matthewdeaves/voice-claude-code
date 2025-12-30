@@ -248,15 +248,19 @@ print_step "6/9" "Setting optimal configuration..."
 ENV_FILE="$VOICEMODE_DIR/voicemode.env"
 
 if [ -f "$ENV_FILE" ]; then
-    # Check if already optimized
-    if grep -q "^VOICEMODE_WHISPER_THREADS=$CPU_CORES" "$ENV_FILE" 2>/dev/null; then
+    # Check if already optimized (using silence threshold as marker)
+    if grep -q "^VOICEMODE_SILENCE_THRESHOLD_MS=3000" "$ENV_FILE" 2>/dev/null; then
         print_skip "Configuration already optimized"
     else
         # Remove old optimization settings if they exist
         sed -i '/^VOICEMODE_WHISPER_THREADS=/d' "$ENV_FILE" 2>/dev/null
         sed -i '/^VOICEMODE_PREFER_LOCAL=/d' "$ENV_FILE" 2>/dev/null
         sed -i '/^VOICEMODE_ALWAYS_TRY_LOCAL=/d' "$ENV_FILE" 2>/dev/null
+        sed -i '/^VOICEMODE_SILENCE_THRESHOLD_MS=/d' "$ENV_FILE" 2>/dev/null
+        sed -i '/^VOICEMODE_MIN_RECORDING_DURATION=/d' "$ENV_FILE" 2>/dev/null
+        sed -i '/^VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD=/d' "$ENV_FILE" 2>/dev/null
         sed -i '/^# Optimizations for this machine/d' "$ENV_FILE" 2>/dev/null
+        sed -i '/^# Voice conversation settings/d' "$ENV_FILE" 2>/dev/null
 
         cat >> "$ENV_FILE" << EOF
 
@@ -264,6 +268,11 @@ if [ -f "$ENV_FILE" ]; then
 VOICEMODE_WHISPER_THREADS=$CPU_CORES
 VOICEMODE_PREFER_LOCAL=true
 VOICEMODE_ALWAYS_TRY_LOCAL=true
+
+# Voice conversation settings - give users more time to respond
+VOICEMODE_SILENCE_THRESHOLD_MS=3000
+VOICEMODE_MIN_RECORDING_DURATION=3.0
+VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD=2.0
 EOF
         print_ok "Configuration optimized"
     fi
