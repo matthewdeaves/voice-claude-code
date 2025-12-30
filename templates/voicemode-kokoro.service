@@ -1,0 +1,20 @@
+[Unit]
+Description=Kokoro Text-to-Speech Server (Voice Mode)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{KOKORO_DIR}}
+Environment="USE_GPU=false"
+Environment="USE_ONNX=false"
+Environment="PYTHONPATH={{KOKORO_DIR}}:{{KOKORO_DIR}}/api"
+Environment="MODEL_DIR=src/models"
+Environment="VOICES_DIR=src/voices/v1_0"
+Environment="WEB_PLAYER_PATH={{KOKORO_DIR}}/web"
+Environment="ESPEAK_DATA_PATH=/usr/lib/x86_64-linux-gnu/espeak-ng-data"
+ExecStart={{KOKORO_DIR}}/.venv/bin/uvicorn api.src.main:app --host 0.0.0.0 --port 8880
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=Whisper Speech-to-Text Server (Voice Mode)
+After=network.target
+
+[Service]
+Type=simple
+Environment="LD_LIBRARY_PATH={{WHISPER_BUILD}}/ggml/src:{{WHISPER_BUILD}}/src"
+WorkingDirectory=/tmp
+ExecStart={{WHISPER_DIR}}/bin/start-whisper-server.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
