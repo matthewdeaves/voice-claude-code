@@ -249,7 +249,7 @@ ENV_FILE="$VOICEMODE_DIR/voicemode.env"
 
 if [ -f "$ENV_FILE" ]; then
     # Check if already optimized (using silence threshold as marker)
-    if grep -q "^VOICEMODE_SILENCE_THRESHOLD_MS=3000" "$ENV_FILE" 2>/dev/null; then
+    if grep -q "^VOICEMODE_SILENCE_THRESHOLD_MS=5000" "$ENV_FILE" 2>/dev/null; then
         print_skip "Configuration already optimized"
     else
         # Remove old optimization settings if they exist
@@ -269,10 +269,10 @@ VOICEMODE_WHISPER_THREADS=$CPU_CORES
 VOICEMODE_PREFER_LOCAL=true
 VOICEMODE_ALWAYS_TRY_LOCAL=true
 
-# Voice conversation settings - give users more time to respond
-VOICEMODE_SILENCE_THRESHOLD_MS=3000
-VOICEMODE_MIN_RECORDING_DURATION=3.0
-VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD=2.0
+# Voice conversation settings - give users plenty of time to think and respond
+VOICEMODE_SILENCE_THRESHOLD_MS=5000
+VOICEMODE_MIN_RECORDING_DURATION=5.0
+VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD=3.0
 EOF
         print_ok "Configuration optimized"
     fi
