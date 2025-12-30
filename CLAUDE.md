@@ -28,6 +28,8 @@ The setup script installs voice-mode to `~/.voicemode/` with services at:
 ### Setup and Installation
 ```bash
 ./setup.sh                    # Install/update everything (idempotent)
+./teardown.sh                 # Stop all services
+./teardown.sh --disable       # Stop services AND disable autostart
 ```
 
 ### Service Management
@@ -49,6 +51,11 @@ claude converse               # Start voice conversation
 ```
 
 ## Key Files
+
+- `teardown.sh`: Stops voice services and optionally disables autostart:
+  - Stops Whisper and Kokoro servers (via systemd and direct process kill)
+  - With `--disable`: Also removes systemd autostart configuration
+  - Does NOT uninstall anything - just stops services
 
 - `setup.sh`: 9-step idempotent installer that:
   1. Installs system dependencies via apt

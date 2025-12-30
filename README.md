@@ -62,6 +62,14 @@ voicemode whisper restart
 voicemode kokoro restart
 ```
 
+Stop all services:
+```bash
+./teardown.sh                 # Stop services only
+./teardown.sh --disable       # Stop services AND disable autostart on boot
+```
+
+To restart after teardown, run `./setup.sh` or use the `voicemode` commands above.
+
 ## Troubleshooting
 
 - **No mic input:** Check PulseAudio/PipeWire permissions
