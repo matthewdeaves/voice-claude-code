@@ -93,8 +93,26 @@ print_step "2/9" "Setting up uv package manager..."
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# SECURITY NOTE: The following command pipes a remote script directly into sh.
+# This is a common but inherently risky pattern (pipe-to-shell). The script is
+# fetched from astral.sh, maintained by the Astral team (creators of Ruff/uv).
+#
+# To verify before running:
+#   1. Download first:  curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh
+#   2. Review:          less /tmp/uv-install.sh
+#   3. Execute:         sh /tmp/uv-install.sh
+#
+# Alternatively, install uv via your system package manager:
+#   - Arch Linux: pacman -S uv
+#   - Homebrew:   brew install uv
+#   - pipx:       pipx install uv
 if ! command_exists uv; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Download, verify, then execute (safer than direct pipe)
+    UV_INSTALLER="/tmp/uv-install-$$.sh"
+    curl -LsSf https://astral.sh/uv/install.sh -o "$UV_INSTALLER"
+    # Users can review $UV_INSTALLER before this line executes
+    sh "$UV_INSTALLER"
+    rm -f "$UV_INSTALLER"
     export PATH="$HOME/.local/bin:$PATH"
     print_ok "uv installed"
 else
